@@ -1,0 +1,18 @@
+@RELATION my_relation
+
+@ATTRIBUTE att1 numeric
+@ATTRIBUTE att2 numeric
+@ATTRIBUTE att3 numeric
+@ATTRIBUTE att4 numeric
+@ATTRIBUTE att5 numeric
+@ATTRIBUTE att6 numeric
+@ATTRIBUTE att7 numeric
+@ATTRIBUTE att8 numeric
+@ATTRIBUTE att9 numeric
+@ATTRIBUTE class A/D,B/D,B/E
+@ORDEN A,C,B,E,D
+
+@DATA
+
+
+
