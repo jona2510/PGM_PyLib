@@ -22,37 +22,19 @@ class BCC:
 
 		self.chainType = chainType
 		self.baseClassifier = baseClassifier	# base classifier, it wil be copied for each class
-		#self.smooth = smooth	
-		#self.meta = meta
-
-
-		#if(self.smooth < 0):
-		#	raise NameError("smooth has to be greater or equal than 0")			
 
 
 		#	Parameters used for predicting
-		#self.usePrior = usePrior
 
 		
 		# Variables estimated by the method. These HAVE NOT to be modified except by the classifier itself
-
+		self.isfit = False
 		self.dCl = {}			#dictionary which contains the classifiers
 		self.dChain = {}		#dictionary with the classes that form the chain for each class	(Parents, Children, Ancestors)
 		self.roots = []				#list with the root nodes
 		self.structure = structure	# a matrix which contains the structure
 		self.orderTC = []			# list with the order in which the classifiers has to be trained (aand the for prediction)
 
-
-		#self.structure = [] 	# a matrix which contains the structure
-		#self.labels = []		# labels of the matrix ## quiza no es necesario
-
-		#self.classes_ = []		# it contains the different classes
-		#self.probsClasses = []	# it contains the probabilities of each class: P(C)
-
-		#self.probsAtts = {}		# it contains the probabilities of each attribute: P(Ai | C)
-		#self.valuesAtts = {}	# it contains the values that the attributte can take
-
-		return
 
 	# train: is a matrix (n x m)  where n is the number of instances and m the number of classes
 	# cl: is a matrix (n x l)  where n is the number of instances and l the number of classes
@@ -106,7 +88,7 @@ class BCC:
 
 
 		# Begin the training
-		#	Folowing the order in self.orderTC		(in train it is not necessary)
+		#	Following the order in self.orderTC		(in train it is not necessary)
 		for x in self.orderTC:
 			#copy the base classifier
 			self.dCl[x] = copy.deepcopy(self.baseClassifier)
@@ -127,8 +109,11 @@ class BCC:
 				
 				del trainAux
 
+		self.isfit = True
+
 
 	def predict_log_proba(self, testSet):		
+		self.checkIfFit()	# first check if the classifier is already trained
 		if( "predict_log_proba" not in dir(self.baseClassifier) ):
 			raise NameError("ERROR: the provided base classifier does NOT have the method 'predict_log_proba'!")
 		
@@ -177,7 +162,8 @@ class BCC:
 		return pr_prob
 
 
-	def predict_proba(self, testSet):		
+	def predict_proba(self, testSet):	
+		self.checkIfFit()	# first check if the classifier is already trained	
 		if( "predict_proba" not in dir(self.baseClassifier) ):
 			raise NameError("ERROR: the provided base classifier does NOT have the method 'predict_proba'!")
 		
@@ -228,6 +214,7 @@ class BCC:
 
 
 	def predict(self, testSet):
+		self.checkIfFit()	# first check if the classifier is already trained
 		# check if testSet has the correct dimensions
 
 		pr = [ [] for x in range(len(self.structure)) ]
@@ -433,7 +420,13 @@ class BCC:
 		return classesMD
 
 
-
+	def checkIfFit(self):
+		"""
+		Check is the classifiers is already trained, 
+		if it is not, then raises a exeption
+		"""
+		if(not self.isfit):
+			raise NameError("Error!: First you have to train ('fit') the classifier!!")
 
 
 

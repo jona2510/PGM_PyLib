@@ -55,7 +55,7 @@ class semiNaive:
 
 		
 		# Variables estimated by the method. These HAVE NOT to be modified except by the classifier itself
-
+		self.isfit = False
 		self.delMI = []			# contains the index of the attributes that are deleted, # it wont be used
 		self.operations = [] 	# contains the operation in order to be applied to the data (attributes), two operations: del and join
 		self.opeNameAtts =[]
@@ -138,7 +138,8 @@ class semiNaive:
 		self.orderAtts = self.trainSet[0].copy()
 
 		self.trainSet = []	# it is deleted
-		return
+
+		self.isfit = True
 
 
 	#This function is bad in terms of memory consuption, because in each iteration, it copies the training set
@@ -385,13 +386,6 @@ class semiNaive:
 			#exit()
 			#if( ( len(np.where( ltrainSet[0] == info[0,i] )[0]) > 0 ) and ( len(np.where( ltrainSet[0] == info[1,i] )[0]) > 0 ) ):
 
-			
-			
-			 
-		
-
-
-		return
 
 	# it joins two list 
 	# l1=["1","2","3"]
@@ -409,6 +403,7 @@ class semiNaive:
 
 	# It applies the operations to a new set (for example, to the test set)
 	def applyOperations(self, data):
+		self.checkIfFit()	# first check if the classifier is already trained
 		daux = data.copy()
 		for x in self.operations:
 			if(x[0] == "del"):
@@ -432,12 +427,15 @@ class semiNaive:
 
 	#returns de probabilities of each class
 	def predict_proba(self,testSet):
+		self.checkIfFit()	# first check if the classifier is already trained
 		return self.NBC.predict_proba( self.applyOperations(testSet).astype(str))
 
 	def predict_log_proba(self,testSet):
+		self.checkIfFit()	# first check if the classifier is already trained
 		return self.NBC.predict_log_proba( self.applyOperations(testSet).astype(str))
 
 	def predict(self,testSet):
+		self.checkIfFit()	# first check if the classifier is already trained
 		return self.NBC.predict( self.applyOperations(testSet).astype(str))
 
 	def exactMatch(self, real, prediction):
@@ -453,4 +451,11 @@ class semiNaive:
 
 		return em
 
+	def checkIfFit(self):
+		"""
+		Check is the classifiers is already trained, 
+		if it is not, then raises a exeption
+		"""
+		if(not self.isfit):
+			raise NameError("Error!: First you have to train ('fit') the classifier!!")
 		

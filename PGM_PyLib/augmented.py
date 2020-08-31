@@ -159,6 +159,7 @@ class augmentedBC:
 		
 		# Variables estimated by the method. These HAVE NOT to be modified except by the classifier itself
 
+		self.isfit = False
 		self.structure = [] 	# a matrix which contains the structure
 		self.labels = []		# labels of the matrix ## quiza no es necesario
 
@@ -250,6 +251,8 @@ class augmentedBC:
 			#print("probs de "+str(i)+":")
 			#print(self.probsAtts[i].probabilities)
 
+		self.isfit = True
+
 
 
 	def predict_log_proba(self,testSet):
@@ -258,6 +261,8 @@ class augmentedBC:
 
 		# we are using the variant of sum of logarithms instead of multiplication of the probabilities
 		#		see Sucar, L. E., Probabilistic Graphical Models, Chapter 4: Bayesian Classifiers
+
+		self.checkIfFit()	# first check if the classifier is already trained
 
 		#Verifying that the number of attributes of testSet correspond to the number of attributes of the classifier
 		if( len(testSet[0]) != len(self.valuesAtts) ):
@@ -332,6 +337,13 @@ class augmentedBC:
 
 
 
+	def checkIfFit(self):
+		"""
+		Check is the classifiers is already trained, 
+		if it is not, then raises a exeption
+		"""
+		if(not self.isfit):
+			raise NameError("Error!: First you have to train ('fit') the classifier!!")
 
 
 
