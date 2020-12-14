@@ -11,8 +11,8 @@ Code author: Jonathan Serrano-Pérez
 
 #libraries
 import numpy as np
-import PGM_PyLib.utils as utils	#checar directorios
-import PGM_PyLib.graphCycle as gc	#checar directorios
+import PGM_PyLib.utils as utils	
+import PGM_PyLib.graphCycle as gc	
 
 
 class CLP_MI:

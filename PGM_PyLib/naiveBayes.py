@@ -342,14 +342,14 @@ class GaussianNaiveBayes(naiveBayes):
 		if( self.meta != "" ):
 			if( len(self.meta) == shTr[1] ):
 				self.valuesAtts = self.meta.copy()
-				print("ingreso")
+				#print("ingreso")
 				#print("WARNING: The values that each attribute can take are given as input!")
 			else:
 				raise NameError("The number of attributes in meta is different to the number of attributes in dataset")
 
 		for i in range( shTr[1] ):			
 			if(self.meta == ""):
-				print(i)
+				#print(i)
 				#self.valuesAtts[i] = np.array( list(set(trainSet[:,i])) )
 				self.valuesAtts[i] = "numeric"
 				self.probsAtts[i] = np.zeros(2)	# mean, standard deviation

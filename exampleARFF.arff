@@ -1,0 +1,14 @@
+@RELATION exampleARFF
+
+@ATTRIBUTE att1 {0,1}
+@ATTRIBUTE att2 {0,1,2}
+@ATTRIBUTE att3 {0,1}
+@ATTRIBUTE class {true,false}
+
+@DATA
+0,1,0,true
+1,1,1,false
+0,2,0,true
+1,0,0,false
+0,2,1,false
+1,0,1,true
