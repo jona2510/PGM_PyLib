@@ -184,10 +184,13 @@ class augmentedBC:
 
 		n=shTr[1]	#number of atts
 
-		self.structure = np.zeros((n+1,n+1))	
+		self.structure = np.zeros((n+1,n+1),dtype=int)	
+
+		# all the attributes are descendents of the class
+		self.structure[-1] = 1
+		self.structure[-1, -1] = 0	# the class is not descendent of itself
 
 		# obtain the structure of the 
-
 		sh = np.shape(self.algStructure)	# shape of structure, it is useful if the structure is given in algStructure
 
 		if(self.algStructure == "auto"):
@@ -196,17 +199,15 @@ class augmentedBC:
 			st = trees.CLP_CMI()	# default parameters for CLP_CMI
 			self.structure[0:-1,0:-1] = st.createStructure(trainSet, cl)
 		elif( len(sh) == 2 ):
-			if( (sh[0] == n) and (sh[0] == sh[1]) ):
+			if( sh[0] == n == sh[1] ):
 				self.structure[0:-1,0:-1] = self.algStructure
+			elif( sh[0] == (n+1) == sh[1] ):	# in the case a matrix with (n+1, n+1) is provided, where de last row/column correspond to the class
+				self.structure[:,:] = self.algStructure[:,:]
 			else:
-				raise NameError("The provided structure has to be a matrix with size (n x n), where n is the number of attributes")
+				raise NameError("The provided structure has to be a matrix with size (n x n) or (n+1,n+1), where n is the number of attributes")
 		else:			
 			raise NameError("algStructure only can take the values: 'auto' or a matrix with size (n x n), where n is the number of attributes")
 
-
-		# all the attributes are descendents of the class
-		self.structure[-1] = 1
-		self.structure[-1, -1] = 0	# the class is not descendent of itself
 
 		#print("Structure:")
 		#print(self.structure)
@@ -229,8 +230,12 @@ class augmentedBC:
 
 		# attributes **************************
 
-		for i in range( len(trainSet[0]) ):
-			self.valuesAtts[i] = np.array( list(set(trainSet[:,i])) )
+		if( (self.meta != "") and (len(self.meta) == len(trainSet[0])) ):
+			self.valuesAtts = self.meta.copy()
+			#print("WARNING: The values that each attribute can take are given as input!")
+		else:
+			for i in range( len(trainSet[0]) ):
+				self.valuesAtts[i] = np.array( list(set(trainSet[:,i])) )
 
 		valuesAux = self.valuesAtts.copy()
 		valuesAux[ len(valuesAux) ] = self.classes_

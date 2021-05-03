@@ -98,8 +98,10 @@ class naiveBayes:
 		for i in self.probsAtts.keys():
 			self.probsAtts[i] = self.probsAtts[i] + self.smooth
 			# estimate the probabilities
-			for j in range(len(self.probsAtts[i])):
-				self.probsAtts[i][j]=self.probsAtts[i][j]/sum(self.probsAtts[i][j])
+
+			#for j in range(len(self.probsAtts[i])):
+			#	self.probsAtts[i][j]=self.probsAtts[i][j]/sum(self.probsAtts[i][j])
+			self.probsAtts[i] = self.probsAtts[i]/sum(self.probsAtts[i])
 
 		self.isfit = True
 
@@ -135,6 +137,7 @@ class naiveBayes:
 				#probs[i][k] = np.log( self.probsClasses[k] )
 				#walk over the attributes
 				for j in range(len(self.valuesAtts)):
+					#print(self.valuesAtts[j] ," - ", testSet[i,j])
 					posA = np.where( self.valuesAtts[j] == testSet[i,j] )[0][0]
 					#print("posA: "+str(posA))
 
@@ -386,8 +389,9 @@ class GaussianNaiveBayes(naiveBayes):
 			if(self.valuesAtts[i] != "numeric" ):
 				self.probsAtts[i] = self.probsAtts[i] + self.smooth
 				# estimate the probabilities
-				for j in range(len(self.probsAtts[i])):
-					self.probsAtts[i][j]=self.probsAtts[i][j]/sum(self.probsAtts[i][j])
+				#for j in range(len(self.probsAtts[i])):
+				#	self.probsAtts[i][j]=self.probsAtts[i][j]/sum(self.probsAtts[i][j])
+				self.probsAtts[i] = self.probsAtts[i]/sum(self.probsAtts[i])
 
 
 		#print("probabilities Attributes:")

@@ -28,13 +28,32 @@ class crossValidation():
 
 		flag = False	# 
 
-		dPos = {}	# dictionary with the position of the instances for each class
+		self.dPos = {}	# dictionary with the position of the instances for each class
 		for x in self.classes:
-			dPos[x] = np.where( self.clSet == x )[0]
-			nl = len(dPos[x])
+			self.dPos[x] = np.where( self.clSet == x )[0]
+			nl = len(self.dPos[x])
 			if( nl < self.folds ):
 				print("WARNING: class " + str(x) + " has " + str(nl) + " elements, which have to be distributed in " + str(self.folds) + " folds")
-				
+
+		#self.valuesAtts = []	# it contains the values that the attributte can take
+		#for i in range( len(self.dataset[0]) ):			
+		#	self.valuesAtts.append( np.array( list(set(self.dataset[:,i])) ) )
+
+		self.valuesAtts = {}	# it contains the values that the attributte can take
+		for i in range( len(self.dataset[0]) ):			
+			self.valuesAtts[i] = np.array( list(set(self.dataset[:,i])) ) 
+
+	def getValuesAtts(self):
+		"""
+		Return the ordered-list with the values that each attribute can take
+		"""
+		return self.valuesAtts.copy()
+
+	def getClasses(self):
+		"""
+		Return the values that the variable-class can take
+		"""
+		return self.classes.copy()
 		
 	def checkErrors(self):
 		if (self.folds <= 1):
@@ -66,13 +85,13 @@ class crossValidation():
 		inst = np.array([]).astype(int)
 
 		for x in self.classes:
-			nl = float(len(dPos[x]))
+			nl = float(len(self.dPos[x]))
 			r = nl / self.folds 	#range
 		
 			start = int( round(fold * r) )
 			end = int( round( (fold + 1) * r ) )
 
-			inst = np.concatenate( [inst, dPos[x][start:end] ] )
+			inst = np.concatenate( [inst, self.dPos[x][start:end] ] )
 
 		inst = sorted(inst)
 
@@ -80,9 +99,9 @@ class crossValidation():
 
 
 	def getFold(self, fold):
-		pos = positionsOfFold(fold)
+		pos = self.positionsOfFold(fold)
 
-		d = set([i for i in range(len(dataset))])
+		d = set([i for i in range(len(self.dataset))])
 		pos = list( d - set(pos) )
 		
 		ds= np.delete( self.dataset, pos, axis=0 )
@@ -92,10 +111,15 @@ class crossValidation():
 		
 
 	def getComplementOfFold(self, fold):
-		pos = positionsOfFold(fold)
+		pos = self.positionsOfFold(fold)
 
 		ds= np.delete( self.dataset, pos, axis=0 )
 		dc= np.delete( self.clSet, pos )
 
 		return (ds,dc)
 
+	def getPercentage(self, p):
+		x = 0
+
+	def getComplementOfPercentage(self, p):
+		x = 0

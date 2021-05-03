@@ -117,14 +117,14 @@ def CMI(X,Y,Z,smooth=0.1):
 					#print("---P(Y,Z)---")
 					PYZ[k,j] = len( y & z )
 	
-	print("PZ:")
-	print(PZ)
-	print("PXZ:")
-	print(PXZ)
-	print("PYZ:")
-	print(PYZ)
-	print("PXYZ:")
-	print(PXYZ)
+	#print("PZ:")
+	#print(PZ)
+	#print("PXZ:")
+	#print(PXZ)
+	#print("PYZ:")
+	#print(PYZ)
+	#print("PXYZ:")
+	#print(PXYZ)
 		
 
 
@@ -274,8 +274,8 @@ def CMI_setZ(X,Y,Z,smooth=0.1):
 	for i in valuesY:
 		pvmy.append( set(np.where(Y == i)[0]) )
 
-	print("pvmz")
-	print(pvmz)
+	#print("pvmz")
+	#print(pvmz)
 
 
 	# counting from data
@@ -319,14 +319,14 @@ def CMI_setZ(X,Y,Z,smooth=0.1):
 					#print("---P(Y,Z)---")
 					PYZ[k,j] = len( y & z )
 	
-	print("PZ:")
-	print(PZ)
-	print("PXZ:")
-	print(PXZ)
-	print("PYZ:")
-	print(PYZ)
-	print("PXYZ:")
-	print(PXYZ)
+	#print("PZ:")
+	#print(PZ)
+	#print("PXZ:")
+	#print(PXZ)
+	#print("PYZ:")
+	#print(PYZ)
+	#print("PXYZ:")
+	#print(PXYZ)
 		
 
 

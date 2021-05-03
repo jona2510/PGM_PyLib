@@ -92,11 +92,15 @@ class semiNaive:
 		self.cl = cl
 	
 
-
-		# obtain some data
-		for i in range( len(trainSet[0]) ):
-			# avoid the first element (name of the attribute), the name of the attribute is used as key
-			self.valuesAtts[ self.trainSet[0,i] ] = np.array( list(set(self.trainSet[1:,i])) )	
+		if( (self.meta != "") and (len(self.meta) == len(trainSet[0])) ):
+			print("atts from meta")			
+			for i in range( len(trainSet[0]) ):
+				self.valuesAtts[ self.trainSet[0,i] ] = self.meta[i]
+		else:
+			# obtain some data
+			for i in range( len(trainSet[0]) ):
+				# avoid the first element (name of the attribute), the name of the attribute is used as key
+				self.valuesAtts[ self.trainSet[0,i] ] = np.array( list(set(self.trainSet[1:,i])) )	
 
 		# In this section the training set is divided in training_2 and validation
 
@@ -106,7 +110,7 @@ class semiNaive:
 		self.NBC = [] 		# the Naive Bayes Classifier for the classification
 
 		div = int( (len(self.trainSet) - 1 ) * self.validation )
-		self.NBC = nb.naiveBayes(self.smooth, self.usePrior)
+		self.NBC = nb.naiveBayes(self.smooth, self.usePrior, meta = self.meta)
 		#print("NBC: ")
 		#print(self.NBC)
 		self.NBC.fit(self.trainSet[1:(div+1)] , self.cl[:div] )#	, meta=l2valuesAtts )
@@ -180,7 +184,9 @@ class semiNaive:
 		ldel = []		# local list of elements that will be deleted
 		ldelNames = []
 		for i in range( n ): 		
-			if( utils.MI( ltrainSet[1:,i], self.cl, self.smooth ) < self.epsilon ):	# should the same "smooth" be used 
+			xmi = utils.MI( ltrainSet[1:,i], self.cl, self.smooth )
+			#print("mi (i,cl): ",xmi)
+			if( xmi < self.epsilon ):	# should the same "smooth" be used 
 				ldel.append(i)
 				ldelNames.append( ltrainSet[0, i] )
 		#print("ldel:")
@@ -204,7 +210,6 @@ class semiNaive:
 		if(n <= 0):
 			raise NameError("Error: All the attributtes have been deleted, try to modify the values of epsilon/omega")
 
-
 		# estimate the CMI, between two attributes given the class
 		z = int( ( n*(n - 1) ) / 2.0 )  
 		info = np.zeros( ( 3, z ) ).astype(str)
@@ -221,6 +226,9 @@ class semiNaive:
 
 		#print("CMI's info:")
 		#print(info)
+		#print("avg: ", np.average(info[2].astype(float)))
+		#print("std: ", np.std(info[2].astype(float)))
+
 		#print("z values: "+str(z))			
 		for i in range( z ):	#len(info[0])
 			#print("z: "+str(i))
@@ -253,6 +261,7 @@ class semiNaive:
 
 				pred = nbc.predict(l2trainSet[(div+1):])
 				lscores[0] = self.exactMatch( self.cl[div:], pred )
+				#print("del att 1: ", lscores[0])
 
 				if( lscores[0] > prevScore):
 					prevScore = lscores[0]
@@ -291,6 +300,7 @@ class semiNaive:
 
 				pred = nbc.predict(l2trainSet[(div+1):])
 				lscores[1] = self.exactMatch( self.cl[div:], pred )
+				#print("del att 2: ", lscores[1])
 
 				if( lscores[1] > prevScore):
 					if(flagUpd):
@@ -344,6 +354,7 @@ class semiNaive:
 
 				pred = nbc.predict(l2trainSet[(div+1):])
 				lscores[2] = self.exactMatch( self.cl[div:], pred )
+				#print("join atts: ", lscores[2])
 
 				if( lscores[2] > prevScore):
 					if(flagUpd):
@@ -405,22 +416,26 @@ class semiNaive:
 	def applyOperations(self, data):
 		self.checkIfFit()	# first check if the classifier is already trained
 		daux = data.copy()
+		#print("daux main: ")
+		#print(daux)
 		for x in self.operations:
 			if(x[0] == "del"):
 				daux = np.delete( daux, x[1], axis=1)
 			elif( x[0] == "join"):
 				# first to combine the attributes
 				dataMod = []	
-				for j in range( len(data) ):
-					dataMod.append( data[ j, x[1][0] ] + ";" + data[ j, x[1][1] ] )
+				for j in range( len(daux) ):
+					dataMod.append( daux[ j, x[1][0] ] + ";" + daux[ j, x[1][1] ] )
 				
-				# the delete the attributes
+				# then delete the attributes
 				daux = np.delete( daux, x[1], axis=1)	#train set without att1 and att2
 
 				#finally concatenate the new attribute
 				daux = np.column_stack( [daux, dataMod] )
 			else:
 				raise NameError("Error: unknown operation ")
+			#print("daux: ")
+			#print(daux)
 
 		return daux
 
